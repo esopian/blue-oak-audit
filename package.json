@@ -1,0 +1,43 @@
+{
+  "name": "blue-oak-audit",
+  "version": "1.0.0",
+  "description": "Audit npm dependencies against the Blue Oak Council license quality list",
+  "type": "module",
+  "bin": {
+    "blue-oak-audit": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "license",
+    "audit",
+    "compliance",
+    "blue-oak",
+    "spdx",
+    "dependencies"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@blueoak/list": "^15.0.0",
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0",
+    "spdx-correct": "^3.2.0",
+    "spdx-expression-parse": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/spdx-correct": "^3.1.2",
+    "@types/spdx-expression-parse": "^3.0.5",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0"
+  }
+}
