@@ -1,0 +1,20 @@
+{
+  "name": "config-project",
+  "version": "0.0.0",
+  "dependencies": {
+    "mit-pkg": "1.0.0",
+    "@scope/isc-pkg": "1.0.0",
+    "dual-or": "1.0.0",
+    "copyleft-and": "1.0.0",
+    "unlicensed-pkg": "1.0.0",
+    "lead-pkg": "1.0.0"
+  },
+  "devDependencies": {
+    "dev-only-pkg": "1.0.0"
+  },
+  "blue-oak-audit": {
+    "minRating": "Silver",
+    "failOnUnrated": true,
+    "summary": true
+  }
+}

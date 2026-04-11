@@ -63,6 +63,44 @@ npx blue-oak-audit --summary
 | `--version` | Print version |
 | `--help` | Print help |
 
+## Configuration via package.json
+
+You can set default options in your project's `package.json` under the `"blue-oak-audit"` key. CLI flags always take precedence over these defaults. All fields are optional.
+
+```json
+{
+  "name": "my-app",
+  "blue-oak-audit": {
+    "minRating": "Silver",
+    "failOnUnrated": true,
+    "exclude": ["legacy-pkg"],
+    "directOnly": false,
+    "includeDev": false
+  }
+}
+```
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `includeDev` | `boolean` | Include devDependencies |
+| `directOnly` | `boolean` | Only audit direct dependencies |
+| `minRating` | `string` | Minimum acceptable tier (`Model`, `Gold`, `Silver`, `Bronze`, `Lead`) |
+| `failOnUnrated` | `boolean` | Fail on unrecognized licenses |
+| `exclude` | `string[]` | Packages to skip |
+| `json` | `boolean` | Output as JSON |
+| `output` | `string` | Write results to a file |
+| `summary` | `boolean` | Show condensed summary |
+
+This is useful for enforcing a project-wide license policy without requiring every developer to remember the right flags:
+
+```bash
+# With config in package.json, just run:
+npx blue-oak-audit
+
+# Override a config default for a one-off check:
+npx blue-oak-audit --min-rating Bronze
+```
+
 ## Output Formats
 
 ### Default Table
@@ -190,10 +228,11 @@ Legacy `package.json` license formats are also supported:
 ### Development
 
 ```bash
-npm run dev          # Watch mode (rebuild on changes)
-npm test             # Run tests
-npm run test:watch   # Watch mode tests
-npm run typecheck    # Type checking
+npm run setup-fixtures   # Create test fixture node_modules (also runs automatically via pretest)
+npm run dev              # Watch mode (rebuild on changes)
+npm test                 # Run tests (fixtures are set up automatically)
+npm run test:watch       # Watch mode tests
+npm run typecheck        # Type checking
 ```
 
 ## License

@@ -7,6 +7,7 @@ import { audit } from './audit.js';
 import { formatTable } from './formatters/table.js';
 import { formatJson } from './formatters/json.js';
 import { formatSummary } from './formatters/summary.js';
+import { loadConfig } from './config.js';
 import { TIERS, type Tier, type AuditOptions } from './types.js';
 
 const require = createRequire(import.meta.url);
@@ -32,28 +33,32 @@ program
   .option('--exclude <packages>', 'Comma-separated list of packages to skip')
   .action((projectPath: string, opts) => {
     const resolvedPath = path.resolve(projectPath);
+    const config = loadConfig(resolvedPath);
 
-    // Validate --min-rating
+    // Validate --min-rating (from CLI or config)
+    const rawMinRating = opts.minRating ?? config.minRating;
     let minRating: Tier | undefined;
-    if (opts.minRating) {
-      if (!TIERS.includes(opts.minRating as Tier)) {
+    if (rawMinRating) {
+      if (!TIERS.includes(rawMinRating as Tier)) {
         console.error(
-          chalk.red(`Invalid --min-rating "${opts.minRating}". Must be one of: ${TIERS.join(', ')}`),
+          chalk.red(`Invalid min-rating "${rawMinRating}". Must be one of: ${TIERS.join(', ')}`),
         );
         process.exit(2);
       }
-      minRating = opts.minRating as Tier;
+      minRating = rawMinRating as Tier;
     }
 
     const options: AuditOptions = {
-      includeDev: opts.includeDev ?? false,
+      includeDev: opts.includeDev ?? config.includeDev ?? false,
       minRating,
-      failOnUnrated: opts.failOnUnrated ?? false,
-      exclude: opts.exclude ? opts.exclude.split(',').map((s: string) => s.trim()) : [],
-      directOnly: opts.direct ?? false,
-      json: opts.json ?? false,
-      output: opts.output,
-      summary: opts.summary ?? false,
+      failOnUnrated: opts.failOnUnrated ?? config.failOnUnrated ?? false,
+      exclude: opts.exclude
+        ? opts.exclude.split(',').map((s: string) => s.trim())
+        : config.exclude ?? [],
+      directOnly: opts.direct ?? config.directOnly ?? false,
+      json: opts.json ?? config.json ?? false,
+      output: opts.output ?? config.output,
+      summary: opts.summary ?? config.summary ?? false,
     };
 
     try {
