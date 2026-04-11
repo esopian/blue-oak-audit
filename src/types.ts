@@ -20,6 +20,17 @@ export interface AuditResult {
   failures: DependencyInfo[];
 }
 
+export interface PackageJsonConfig {
+  includeDev?: boolean;
+  minRating?: Tier;
+  failOnUnrated?: boolean;
+  exclude?: string[];
+  directOnly?: boolean;
+  json?: boolean;
+  output?: string;
+  summary?: boolean;
+}
+
 export interface AuditOptions {
   includeDev: boolean;
   minRating?: Tier;

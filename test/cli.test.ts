@@ -9,6 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.join(__dirname, '..');
 const cli = path.join(projectRoot, 'dist', 'cli.js');
 const fakeProject = path.join(__dirname, 'fixtures', 'fake-project');
+const configProject = path.join(__dirname, 'fixtures', 'config-project');
 
 const env = { ...process.env, FORCE_COLOR: '0', NODE_NO_WARNINGS: '1' };
 
@@ -93,6 +94,24 @@ describe('CLI', () => {
   it('nonexistent path exits 2', () => {
     const { exitCode } = run('/nonexistent/path/to/project');
     expect(exitCode).toBe(2);
+  });
+
+  it('reads config defaults from package.json', () => {
+    // config-project has summary: true, so output should contain bar chart
+    const { stdout, exitCode } = run(configProject);
+    // failOnUnrated is true in config and fixture has unlicensed-pkg → exit 1
+    expect(exitCode).toBe(1);
+    expect(stdout).toContain('█');
+  });
+
+  it('CLI flags override package.json config', () => {
+    // config-project has summary: true, but --json should override
+    const { stdout, exitCode } = run(`--json ${configProject}`);
+    // Still exits 1 due to config failOnUnrated + unrated deps
+    expect(exitCode).toBe(1);
+    const parsed = JSON.parse(stdout);
+    expect(parsed).toHaveProperty('project');
+    expect(parsed).toHaveProperty('dependencies');
   });
 
   it('--output writes results to a file', () => {
