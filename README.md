@@ -228,10 +228,11 @@ Legacy `package.json` license formats are also supported:
 ### Development
 
 ```bash
-npm run dev          # Watch mode (rebuild on changes)
-npm test             # Run tests
-npm run test:watch   # Watch mode tests
-npm run typecheck    # Type checking
+npm run setup-fixtures   # Create test fixture node_modules (also runs automatically via pretest)
+npm run dev              # Watch mode (rebuild on changes)
+npm test                 # Run tests (fixtures are set up automatically)
+npm run test:watch       # Watch mode tests
+npm run typecheck        # Type checking
 ```
 
 ## License
