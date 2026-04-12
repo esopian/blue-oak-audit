@@ -17,7 +17,8 @@
     "pretest": "bash test/setup-fixtures.sh",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "prepublishOnly": "npm run typecheck && npm run build"
   },
   "engines": {
     "node": ">=18"
@@ -30,6 +31,14 @@
     "spdx",
     "dependencies"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/esopian/blue-oak-audit.git"
+  },
+  "homepage": "https://github.com/esopian/blue-oak-audit#readme",
+  "bugs": {
+    "url": "https://github.com/esopian/blue-oak-audit/issues"
+  },
   "license": "MIT",
   "dependencies": {
     "@blueoak/list": "^15.0.0",

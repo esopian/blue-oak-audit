@@ -1,0 +1,56 @@
+name: Publish to npm
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - name: Check if version changed
+        id: version-check
+        run: |
+          PACKAGE_VERSION=$(node -e "import fs from 'fs'; const p = JSON.parse(fs.readFileSync('./package.json', 'utf8')); console.log(p.version)" --input-type=module)
+          PUBLISHED_VERSION=$(npm view blue-oak-audit version 2>/dev/null || echo "0.0.0")
+          if [ "$PACKAGE_VERSION" = "$PUBLISHED_VERSION" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Version $PACKAGE_VERSION already published, skipping."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "Publishing $PACKAGE_VERSION (current: $PUBLISHED_VERSION)"
+          fi
+
+      - name: Install dependencies
+        if: steps.version-check.outputs.skip != 'true'
+        run: npm ci
+
+      - name: Setup test fixtures
+        if: steps.version-check.outputs.skip != 'true'
+        run: npm run setup-fixtures
+
+      - name: Typecheck
+        if: steps.version-check.outputs.skip != 'true'
+        run: npm run typecheck
+
+      - name: Build
+        if: steps.version-check.outputs.skip != 'true'
+        run: npm run build
+
+      - name: Test
+        if: steps.version-check.outputs.skip != 'true'
+        run: npm test
+
+      - name: Publish
+        if: steps.version-check.outputs.skip != 'true'
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
