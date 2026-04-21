@@ -237,7 +237,7 @@ npm run typecheck        # Type checking
 
 ## Publishing
 
-The package auto-publishes to npm when a version bump is merged to `master`. To release:
+Publishing is manual. To release:
 
 1. Bump the version:
    ```bash
@@ -245,17 +245,14 @@ The package auto-publishes to npm when a version bump is merged to `master`. To 
    npm version minor   # 1.0.0 → 1.1.0 (new features)
    npm version major   # 1.0.0 → 2.0.0 (breaking changes)
    ```
-2. Push with tags:
+2. Publish to npm (requires npm authentication):
+   ```bash
+   npm publish
+   ```
+3. Push with tags:
    ```bash
    git push origin master --follow-tags
    ```
-3. CI detects the version bump and publishes to npm automatically.
-
-To publish manually (requires npm authentication):
-
-```bash
-npm publish
-```
 
 The `prepublishOnly` script runs typecheck and build automatically before publishing.
 
